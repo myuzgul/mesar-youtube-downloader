@@ -13,13 +13,11 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from pydantic import BaseModel
 
-import ffmpeg_installer
+import ffmpeg_helper
 import license_manager
 
 # Ensure FFmpeg is present & added to PATH
-ffmpeg_dir = ffmpeg_installer.ensure_ffmpeg()
-if ffmpeg_dir and ffmpeg_dir not in os.environ["PATH"]:
-    os.environ["PATH"] = ffmpeg_dir + os.pathsep + os.environ["PATH"]
+ffmpeg_dir = ffmpeg_helper.setup_ffmpeg_env()
 
 if getattr(sys, 'frozen', False):
     BUNDLE_DIR = sys._MEIPASS
