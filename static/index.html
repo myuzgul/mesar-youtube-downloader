@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediaDownloader PRO</title>
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="background-glow"></div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fa-brands fa-youtube"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>MediaDownloader <span>PRO</span></h1>
+                    <p>yt-dlp & FFmpeg Gücüyle Yüksek Kalitede İndirin</p>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div id="creditBadge" class="credit-badge credit-green" title="Ücretsiz İndirme Hakkı">
+                    <i class="fa-solid fa-gift"></i>
+                    <span id="creditStatusText">Kalan Hak: 10 / 10</span>
+                </div>
+
+                <div id="licenseBadge" class="license-badge unactivated" title="Lisans Durumu">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span id="licenseStatusText">Ücretsiz Sürüm</span>
+                </div>
+
+                <button id="btnOpenFolder" class="btn-secondary" title="İndirilenler Klasörünü Aç">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>İndirilenler Klasörü</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- URL Input Section -->
+            <section class="card input-card">
+                <div class="input-header">
+                    <h2><i class="fa-solid fa-link"></i> Video Bağlantısı</h2>
+                    <p>YouTube video veya oynatma listesi (playlist) linkini buraya yapıştırın</p>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="urlInput" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+                        <button id="btnPaste" class="btn-icon" title="Panodan Yapıştır">
+                            <i class="fa-solid fa-paste"></i>
+                        </button>
+                    </div>
+                    <button id="btnAnalyze" class="btn-primary">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span id="btnAnalyzeText">Formatları Getir</span>
+                    </button>
+                </div>
+                
+                <div id="errorMessage" class="error-banner hidden">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span id="errorText">Bir hata oluştu.</span>
+                </div>
+            </section>
+
+            <!-- Video Info & Formats Card -->
+            <section id="resultCard" class="card result-card hidden">
+                <div class="video-preview-header">
+                    <div class="thumbnail-wrapper">
+                        <img id="videoThumbnail" src="" alt="Video Kapak Resmi">
+                        <span id="videoDuration" class="duration-badge">00:00</span>
+                    </div>
+
+                    <div class="video-meta">
+                        <h2 id="videoTitle" class="video-title">Video Başlığı</h2>
+                        <div class="meta-tags">
+                            <span class="meta-item"><i class="fa-solid fa-user"></i> <strong id="videoUploader">Kanal</strong></span>
+                            <span class="meta-item"><i class="fa-solid fa-eye"></i> <span id="videoViews">0 izlenme</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="divider">
+
+                <!-- Format Selection Section -->
+                <div class="formats-header">
+                    <h3><i class="fa-solid fa-sliders"></i> Format & Kalite Seçimi</h3>
+                    <div class="filter-tabs">
+                        <button class="tab-btn active" data-filter="all">Tümü</button>
+                        <button class="tab-btn" data-filter="video">Video</button>
+                        <button class="tab-btn" data-filter="audio">Sadece Ses</button>
+                        <button class="tab-btn" data-filter="custom">Gelişmiş Liste</button>
+                    </div>
+                </div>
+
+                <!-- Presets Grid -->
+                <div id="presetsGrid" class="presets-grid"></div>
+
+                <!-- Custom Raw Formats Table -->
+                <div id="customFormatsContainer" class="custom-formats-container hidden">
+                    <p class="custom-note"><i class="fa-solid fa-circle-info"></i> Özel yayın veya spesifik codec seçmek için listeden bir format seçebilirsiniz:</p>
+                    <div class="table-responsive">
+                        <table class="formats-table">
+                            <thead>
+                                <tr>
+                                    <th>Format ID</th>
+                                    <th>Çözünürlük</th>
+                                    <th>FPS</th>
+                                    <th>Uzantı</th>
+                                    <th>Boyut</th>
+                                    <th>Seç</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customFormatsTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Action Bar -->
+                <div class="download-action-bar">
+                    <div class="selected-summary">
+                        <span>Seçilen Format:</span>
+                        <strong id="selectedFormatTitle">En Yüksek Kalite (Otomatik)</strong>
+                    </div>
+                    <button id="btnStartDownload" class="btn-success">
+                        <i class="fa-solid fa-download"></i>
+                        <span>İndirmeyi Başlat</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Download Progress Overlay -->
+            <section id="progressCard" class="card progress-card hidden">
+                <div class="progress-header">
+                    <div class="progress-title-group">
+                        <i class="fa-solid fa-circle-notch fa-spin status-spinner" id="statusSpinner"></i>
+                        <div>
+                            <h3 id="progressStatusTitle">İndirme Başlatılıyor...</h3>
+                            <p id="progressFileName" class="progress-filename">video.mp4</p>
+                        </div>
+                    </div>
+                    <span id="progressPercentBadge" class="percent-badge">0%</span>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="progress-bar-container">
+                    <div id="progressBarFill" class="progress-bar-fill" style="width: 0%;"></div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="progress-stats-grid">
+                    <div class="stat-box">
+                        <span class="stat-label">İndirilen / Toplam</span>
+                        <span id="statDownloaded" class="stat-value">0 MB / 0 MB</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">İndirme Hızı</span>
+                        <span id="statSpeed" class="stat-value">--- MB/s</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Kalan Süre</span>
+                        <span id="statEta" class="stat-value">---</span>
+                    </div>
+                </div>
+
+                <!-- Completion Box -->
+                <div id="downloadCompleteBox" class="complete-box hidden">
+                    <div class="complete-icon">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <div class="complete-text">
+                        <h4>İndirme Tamamlandı!</h4>
+                        <p>Dosyanız <code>downloads</code> klasörüne başarıyla kaydedildi.</p>
+                    </div>
+                    <button id="btnOpenCompletedFolder" class="btn-primary">
+                        <i class="fa-solid fa-folder-open"></i> Dosyayı Göster
+                    </button>
+                </div>
+            </section>
+
+            <!-- Downloaded Files History Section -->
+            <section class="card history-card">
+                <div class="history-header">
+                    <h3><i class="fa-solid fa-clock-rotate-left"></i> Son İndirilenler</h3>
+                    <button id="btnRefreshHistory" class="btn-icon" title="Yenile">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+                <div id="historyList" class="history-list">
+                    <div class="empty-history">Henüz bu oturumda indirilmiş bir dosya yok.</div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- License Activation Modal -->
+    <div id="licenseModal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-icon"><i class="fa-solid fa-key"></i></div>
+                <div>
+                    <h2>Lisans Aktivasyonu</h2>
+                    <p>MediaDownloader PRO'yu sınırsız kullanmak için lisans anahtarınızı girin.</p>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="hwid-box">
+                    <span class="hwid-label">Donanım İmzası (HWID):</span>
+                    <div class="hwid-value-wrapper">
+                        <code id="hwidValue">HWID-XXXX-XXXX-XXXX</code>
+                        <button id="btnCopyHWID" class="btn-icon" title="HWID Kopyala">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="input-field">
+                    <label for="licenseKeyInput">Lisans Anahtarı:</label>
+                    <input type="text" id="licenseKeyInput" placeholder="MDP-PRO-XXXX-Y1Y2-Y3Y4" autocomplete="off">
+                </div>
+
+                <div id="licenseError" class="error-banner hidden">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span id="licenseErrorText">Geçersiz lisans anahtarı.</span>
+                </div>
+
+                <div class="purchase-info-box" style="margin-top: 14px; background: rgba(99, 102, 241, 0.1); border: 1px dashed rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 10px 14px; font-size: 0.85rem; color: #cbd5e1; line-height: 1.4;">
+                    <i class="fa-solid fa-circle-info" style="color: #6366f1; margin-right: 6px;"></i>
+                    Lisans anahtarınız yok mu? <strong>Shopier</strong> üzerinden güvenle satın alabilirsiniz. Ödeme sonrası kodunuz kısa sürede tarafınıza iletilir.
+                </div>
+            </div>
+
+            <div class="modal-footer dual-buttons">
+                <button id="btnModalBuyFromLicense" class="btn-success">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>Lisans Satın Al</span>
+                </button>
+                <button id="btnActivateLicense" class="btn-primary">
+                    <i class="fa-solid fa-unlock"></i>
+                    <span>Etkinleştir</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Out of Credits & Upgrade Modal -->
+    <div id="outOfCreditsModal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-icon warning-icon"><i class="fa-solid fa-crown"></i></div>
+                <div>
+                    <h2>Ücretsiz İndirme Hakkınız Bitti!</h2>
+                    <p>10 ücretsiz indirme hakkınızı tamamladınız. Sınırsız indirmek için PRO lisansa geçin.</p>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="pro-features-box">
+                    <h4><i class="fa-solid fa-star"></i> PRO Üyelik Ayrıcalıkları:</h4>
+                    <ul>
+                        <li><i class="fa-solid fa-check"></i> Sınırsız Video ve Müzik İndirme</li>
+                        <li><i class="fa-solid fa-check"></i> 1080p Full HD ve 4K Ultra HD Desteği</li>
+                        <li><i class="fa-solid fa-check"></i> Yüksek Hızlı Dönüştürme & Reklamsız Kullanım</li>
+                    </ul>
+                </div>
+
+                <div class="input-field">
+                    <label for="modalLicenseKeyInput">Lisans Anahtarınız Varsa Girin:</label>
+                    <input type="text" id="modalLicenseKeyInput" placeholder="MDP-PRO-XXXX-Y1Y2-Y3Y4" autocomplete="off">
+                </div>
+
+                <div id="modalLicenseError" class="error-banner hidden">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span id="modalLicenseErrorText">Geçersiz lisans anahtarı.</span>
+                </div>
+
+                <div class="purchase-info-box" style="margin-top: 12px; background: rgba(34, 197, 94, 0.1); border: 1px dashed rgba(34, 197, 94, 0.3); border-radius: 8px; padding: 10px 14px; font-size: 0.85rem; color: #cbd5e1; line-height: 1.4;">
+                    <i class="fa-solid fa-shield-halved" style="color: #22c55e; margin-right: 6px;"></i>
+                    <strong>Güvenli Ödeme:</strong> Shopier üzerinden satın alımdan sonra lisans kodunuz en kısa sürede tarafınıza iletilmektedir.
+                </div>
+            </div>
+
+            <div class="modal-footer dual-buttons">
+                <button id="btnBuyLicense" class="btn-success">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>🛒 Shopier'den Lisans Al</span>
+                </button>
+                <button id="btnModalActivate" class="btn-primary">
+                    <i class="fa-solid fa-unlock"></i>
+                    <span>Etkinleştir</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
