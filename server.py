@@ -96,7 +96,7 @@ def get_video_info(req: InfoRequest):
         'noplaylist': True,
         'extractor_args': {
             'youtube': {
-                'player_client': ['android', 'ios', 'mweb', 'tv_embedded'],
+                'player_client': ['android', 'android_music'],
                 'player_skip': ['configs', 'webpage']
             }
         },
@@ -292,7 +292,7 @@ async def websocket_download(websocket: WebSocket):
             'noplaylist': True,
             'extractor_args': {
                 'youtube': {
-                    'player_client': ['android', 'ios', 'mweb', 'tv_embedded'],
+                    'player_client': ['android', 'android_music'],
                     'player_skip': ['configs', 'webpage']
                 }
             },
