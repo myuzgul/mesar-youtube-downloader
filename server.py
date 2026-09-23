@@ -94,9 +94,16 @@ def get_video_info(req: InfoRequest):
         'no_warnings': True,
         'extract_flat': False,
         'noplaylist': True,
-        'js_runtimes': {'node': {}},
-        'remote_components': ['ejs:github'],
-        'extractor_args': {'youtube': {'player_client': ['web_embedded', 'android_vr', 'mweb']}},
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'ios', 'mweb', 'tv_embedded'],
+                'player_skip': ['configs', 'webpage']
+            }
+        },
+        'http_headers': {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+            'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
+        }
     }
 
     try:
@@ -283,9 +290,16 @@ async def websocket_download(websocket: WebSocket):
             'progress_hooks': [progress_hook],
             'ffmpeg_location': ffmpeg_dir,
             'noplaylist': True,
-            'js_runtimes': {'node': {}},
-            'remote_components': ['ejs:github'],
-            'extractor_args': {'youtube': {'player_client': ['web_embedded', 'android_vr', 'mweb']}},
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['android', 'ios', 'mweb', 'tv_embedded'],
+                    'player_skip': ['configs', 'webpage']
+                }
+            },
+            'http_headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+                'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
+            },
             'quiet': True,
             'no_warnings': True,
         }
